@@ -13,14 +13,14 @@
     <style>
         :root {
             --primary: #020617; --accent: #2563eb; --solana: #14f195; 
-            --glass: rgba(15, 23, 42, 0.8); --text: #f1f5f9;
+            --glass: rgba(15, 23, 42, 0.9); --text: #f1f5f9;
         }
         body { font-family: 'Inter', sans-serif; background: #020617; color: var(--text); margin: 0; line-height: 1.6; }
         .nav { background: #0f172a; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); }
         .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 3px; display: flex; align-items: center; gap: 10px; }
         .container { max-width: 850px; margin: 2rem auto; padding: 0 1rem; }
         .card { background: var(--glass); border-radius: 20px; padding: 2.5rem; border: 1px solid #1e293b; margin-bottom: 2rem; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        h2 { font-size: 1.2rem; color: var(--solana); display: flex; align-items: center; gap: 10px; text-transform: uppercase; margin-top: 0; }
+        h2 { font-size: 1.1rem; color: var(--solana); display: flex; align-items: center; gap: 10px; text-transform: uppercase; margin-top: 0; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 650px) { .grid { grid-template-columns: 1fr; } }
         input, textarea, select { width: 100%; padding: 14px; background: #1e293b; border: 1px solid #334155; border-radius: 12px; color: white; box-sizing: border-box; }
@@ -45,105 +45,107 @@
     
     <div id="setup-view">
         <div class="card">
-            <h2><i class="fa-solid fa-user-lock"></i> 1. Security & Email</h2>
+            <h2><i class="fa-solid fa-user-lock"></i> 1. Security & Identity</h2>
             <div class="grid">
-                <input type="password" id="masterKey" placeholder="Legacy Master Key (Min 8 chars)">
-                <input type="email" id="ownerEmail" placeholder="Your Notification Email">
+                <input type="password" id="masterKey" placeholder="Master Access Key (Min 8 chars)">
+                <input type="email" id="ownerEmail" placeholder="Your Personal Email">
             </div>
         </div>
 
         <div class="card">
-            <h2><i class="fa-solid fa-folder-open"></i> 2. Files & Assets</h2>
+            <h2><i class="fa-solid fa-folder-open"></i> 2. Legacy Assets</h2>
             <div class="grid" style="margin-bottom: 15px;">
-                <textarea id="bankInfo" rows="4" placeholder="Financial & Property Details"></textarea>
-                <textarea id="digitalInfo" rows="4" placeholder="Crypto & Social Passwords"></textarea>
+                <textarea id="bankInfo" rows="4" placeholder="Bank, Property, & Legal details"></textarea>
+                <textarea id="digitalInfo" rows="4" placeholder="Crypto Seed Phrases & Logins"></textarea>
             </div>
-            <label style="font-size: 0.8rem; opacity: 0.7;">ATTACH DOCUMENTS (PDF, PHOTOS, VIDEO)</label>
+            <label style="font-size: 0.75rem; opacity: 0.6;">UPLOAD DOCUMENTS (PDF, IMAGES, ETC.)</label>
             <input type="file" id="fileInput" multiple onchange="processFiles(this.files)" style="margin-top: 5px;">
             <div id="fileStatusList" class="file-preview-list hidden">
-                <strong>Files to be Encrypted:</strong>
+                <strong style="font-size: 0.8rem;">Ready for Encryption:</strong>
                 <div id="fileItems"></div>
             </div>
         </div>
 
         <div class="card">
-            <h2><i class="fa-solid fa-hourglass-start"></i> 3. Heartbeat Config</h2>
+            <h2><i class="fa-solid fa-hourglass-start"></i> 3. Trigger & Beneficiary</h2>
             <div class="grid">
                 <select id="triggerTime">
-                    <option value="0.0014">2 Minutes (Fast Testing)</option>
-                    <option value="0.007">10 Minutes</option>
+                    <option value="0.0014">2 Minutes (Fast Test)</option>
                     <option value="30">30 Days</option>
+                    <option value="90">90 Days</option>
                     <option value="365">1 Year</option>
                 </select>
-                <input type="email" id="beneficiaryEmail" placeholder="Beneficiary Email">
+                <input type="email" id="beneficiaryEmail" placeholder="Beneficiary Email (Nominee)">
             </div>
             <button class="btn btn-primary" style="margin-top: 20px;" onclick="sealVault()">SEAL MASTER VAULT</button>
-            <button class="btn btn-portal" onclick="openPortal()">LEGACY ACCESS PORTAL (CLAIMANTS)</button>
+            <button class="btn btn-portal" onclick="openPortal()">LEGACY ACCESS PORTAL</button>
         </div>
     </div>
 
     <div id="active-view" class="hidden">
         <div class="card" style="text-align: center;">
-            <div style="color: var(--solana); font-weight: bold; letter-spacing: 2px;">VAULT SEALED</div>
+            <div style="color: var(--solana); font-weight: bold; letter-spacing: 2px;">VAULT ACTIVE</div>
             <div id="timerDisplay" class="countdown">00</div>
-            <p style="opacity: 0.7;">Time remaining until automated delivery</p>
+            <p style="opacity: 0.7;">Time until automated legacy notification</p>
             <button class="btn btn-check" onclick="checkIn()"><i class="fa-solid fa-fingerprint"></i> PERFORM CHECK-IN</button>
             <button class="btn btn-portal" style="margin-top: 40px;" onclick="openPortal()">OPEN ACCESS PORTAL</button>
-            <button class="btn" style="background: #450a0a; color: #f87171; margin-top: 15px;" onclick="wipeVault()">DESTROY VAULT</button>
+            <button class="btn" style="background: #450a0a; color: #f87171; margin-top: 15px;" onclick="wipeVault()">WIPE ALL DATA</button>
         </div>
     </div>
 
     <div id="portal-view" class="hidden">
         <div class="card">
-            <h2 style="color: var(--accent);"><i class="fa-solid fa-key"></i> Legacy Access</h2>
-            <p>To unlock the legacy, provide the Master Key and the required Verification Document.</p>
+            <h2 style="color: var(--accent);"><i class="fa-solid fa-key"></i> Legacy Access Center</h2>
+            <p style="font-size: 0.9rem;">To unlock this vault, provide the legal Master Key provided by the owner.</p>
             <input type="file" id="proofDoc" style="margin-bottom: 15px;">
             <input type="password" id="unlockKey" placeholder="Enter Master Legacy Key">
-            <button class="btn btn-primary" style="margin-top: 20px;" onclick="unlockLegacy()"><i class="fa-solid fa-unlock"></i> UNLOCK DATA</button>
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="unlockLegacy()"><i class="fa-solid fa-unlock"></i> UNLOCK VAULT</button>
             
             <div id="decrypted-area" class="hidden" style="margin-top: 25px; border-top: 2px solid var(--solana); padding-top: 20px;">
-                <h3>DECRYPTED ASSETS:</h3>
+                <h3 style="color:var(--solana);">DECRYPTED ASSETS:</h3>
                 <p id="viewText" style="white-space: pre-wrap; background: #0f172a; padding: 15px; border-radius: 10px;"></p>
-                <div id="viewLinks"></div>
+                <div id="viewLinks" style="margin-top: 15px;"></div>
             </div>
-            <button class="btn btn-portal" onclick="location.reload()">BACK TO OWNER DASHBOARD</button>
+            <button class="btn btn-portal" onclick="location.reload()">BACK TO DASHBOARD</button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- INITIALIZE EMAILJS ---
+    // --- INTEGRATED CREDENTIALS ---
+    const PUBLIC_KEY = "UjQcyAneLY2BmOV1Z";
+    const SERVICE_ID = "service_andok0r";
+    const TEMPLATE_ID = "template_3xoxzb9";
+
     (function(){
-        emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your Public Key
+        emailjs.init(PUBLIC_KEY);
     })();
 
     let walletAddress = null;
     let fileBuffer = [];
 
-    // Solana Wallet Connection
     async function connectSolana() {
         if (window.solana) {
             const resp = await window.solana.connect();
             walletAddress = resp.publicKey.toString();
-            document.getElementById('walletBtn').innerText = walletAddress.slice(0,4) + "..." + walletAddress.slice(-4);
-            document.getElementById('walletBtn').style.background = "#14f195";
-            document.getElementById('walletBtn').style.color = "#000";
-        } else { alert("Solana Wallet (Phantom/Solflare) not found."); }
+            const btn = document.getElementById('walletBtn');
+            btn.innerText = walletAddress.slice(0,4) + "..." + walletAddress.slice(-4);
+            btn.style.background = "#14f195";
+            btn.style.color = "#000";
+        } else { alert("Please install Phantom or Solflare wallet."); }
     }
 
-    // File Processing (Preview feature)
     function processFiles(files) {
         fileBuffer = [];
-        const container = document.getElementById('fileStatusList');
+        document.getElementById('fileStatusList').classList.remove('hidden');
         const items = document.getElementById('fileItems');
-        container.classList.remove('hidden');
         items.innerHTML = "";
         
         for (let f of files) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 fileBuffer.push({ name: f.name, data: e.target.result });
-                items.innerHTML += `<div style="padding: 5px 0; border-bottom: 1px solid #334155; font-size: 0.8rem;">📄 ${f.name} (Ready)</div>`;
+                items.innerHTML += `<div style="padding: 4px 0; border-bottom: 1px solid #334155; font-size: 0.75rem;">✔️ ${f.name}</div>`;
             };
             reader.readAsDataURL(f);
         }
@@ -154,7 +156,7 @@
         const email = document.getElementById('ownerEmail').value;
         const beneficiary = document.getElementById('beneficiaryEmail').value;
 
-        if(key.length < 8 || !email || !beneficiary) { alert("Please fill in all security fields."); return; }
+        if(key.length < 8 || !email || !beneficiary) { alert("Missing security details or short key."); return; }
 
         const rawData = {
             fin: document.getElementById('bankInfo').value,
@@ -168,19 +170,18 @@
             payload: encrypted,
             owner: email,
             beneficiary: beneficiary,
-            wallet: walletAddress,
             interval: parseFloat(document.getElementById('triggerTime').value) * 24 * 60 * 60 * 1000,
             lastActive: Date.now(),
             triggered: false
         };
 
-        localStorage.setItem('master_will_v4', JSON.stringify(config));
-        alert("Legacy sealed and encrypted. The heartbeat is now active.");
+        localStorage.setItem('digital_will_master_v4', JSON.stringify(config));
+        alert("Vault successfully sealed. Countdown started.");
         render();
     }
 
     function render() {
-        const stored = localStorage.getItem('master_will_v4');
+        const stored = localStorage.getItem('digital_will_master_v4');
         if(stored) {
             document.getElementById('setup-view').classList.add('hidden');
             document.getElementById('active-view').classList.remove('hidden');
@@ -195,17 +196,31 @@
             const minsLeft = Math.ceil(msRemaining / (1000 * 60));
             const daysLeft = Math.ceil(msRemaining / (1000 * 60 * 60 * 24));
             
-            // Show minutes if testing (2min/10min), else show days
             document.getElementById('timerDisplay').innerText = config.interval < 3600000 ? minsLeft + "m" : daysLeft + "d";
         }
     }
 
+    function sendLegacyEmail(config) {
+        config.triggered = true;
+        localStorage.setItem('digital_will_master_v4', JSON.stringify(config));
+
+        const params = {
+            beneficiary_email: config.beneficiary,
+            owner_email: config.owner,
+            message: "The Digital Will inactivity trigger has been activated. Please use your provided key to access the vault."
+        };
+
+        emailjs.send(SERVICE_ID, TEMPLATE_ID, params)
+            .then(() => { alert("LEGACY TRIGGERED: Email sent to beneficiary."); })
+            .catch((err) => { console.error("EmailJS Error:", err); });
+    }
+
     function checkIn() {
-        let config = JSON.parse(localStorage.getItem('master_will_v4'));
+        let config = JSON.parse(localStorage.getItem('digital_will_master_v4'));
         config.lastActive = Date.now();
         config.triggered = false;
-        localStorage.setItem('master_will_v4', JSON.stringify(config));
-        alert("Check-in Successful. Timer reset.");
+        localStorage.setItem('digital_will_master_v4', JSON.stringify(config));
+        alert("Heartbeat confirmed. Timer reset.");
         render();
     }
 
@@ -218,50 +233,33 @@
     function unlockLegacy() {
         const key = document.getElementById('unlockKey').value;
         const proof = document.getElementById('proofDoc').files[0];
-        if(!proof) { alert("Legal Proof Document Required."); return; }
+        if(!proof || !key) { alert("Proof document and Master Key are mandatory."); return; }
 
-        const config = JSON.parse(localStorage.getItem('master_will_v4'));
+        const config = JSON.parse(localStorage.getItem('digital_will_master_v4'));
         try {
             const bytes = CryptoJS.AES.decrypt(config.payload, key);
             const decrypted = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 
             document.getElementById('decrypted-area').classList.remove('hidden');
-            document.getElementById('viewText').innerText = `FINANCIAL:\n${decrypted.fin}\n\nDIGITAL:\n${decrypted.dig}`;
+            document.getElementById('viewText').innerText = `[FINANCIAL ASSETS]\n${decrypted.fin}\n\n[DIGITAL LOGINS]\n${decrypted.dig}`;
             
             const links = document.getElementById('viewLinks');
-            links.innerHTML = "<h4>ATTACHMENTS:</h4>";
+            links.innerHTML = "<h4 style='color:var(--solana)'>ATTACHED FILES:</h4>";
             decrypted.files.forEach(f => {
-                links.innerHTML += `<a href="${f.data}" download="${f.name}" style="color:var(--solana); display:block; margin-bottom:10px;">💾 Download ${f.name}</a>`;
+                links.innerHTML += `<a href="${f.data}" download="${f.name}" style="color:var(--text); text-decoration:none; display:block; margin:8px 0; padding:10px; background:#1e293b; border-radius:8px;">📁 Download ${f.name}</a>`;
             });
-        } catch (e) { alert("Invalid Master Key."); }
-    }
-
-    function sendLegacyEmail(config) {
-        config.triggered = true;
-        localStorage.setItem('master_will_v4', JSON.stringify(config));
-
-        const params = {
-            beneficiary_email: config.beneficiary,
-            owner_email: config.owner,
-            message: "A secure legacy vault has been triggered. Please visit the Digital Will portal to claim the assets."
-        };
-
-        emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', params)
-            .then(() => { console.log("Email Sent!"); })
-            .catch((err) => { console.error("Email Failed", err); });
-        
-        alert("Inactivity period exceeded. Automated Legacy Notification has been sent.");
+        } catch (e) { alert("Access Denied: Incorrect Master Key."); }
     }
 
     function wipeVault() {
-        if(confirm("PERMANENT DESTRUCTION?")) {
-            localStorage.removeItem('master_will_v4');
+        if(confirm("Are you sure? This will delete all encrypted data forever.")) {
+            localStorage.removeItem('digital_will_master_v4');
             location.reload();
         }
     }
 
     window.onload = render;
-    setInterval(render, 30000); // UI updates every 30s
+    setInterval(render, 30000); 
 </script>
 
 </body>
